@@ -16,6 +16,4 @@ jobs:
     - run: npm test
     - uses: ./
       with:
-        draft-pr: 
-          - peburrows
-          - bvandorn
+        draft-pr: '["peburrows", "bvandorn"]'
