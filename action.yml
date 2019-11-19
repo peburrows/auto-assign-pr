@@ -1,13 +1,10 @@
-name: 'Wait'
-description: 'Wait a designated number of milliseconds'
+name: 'Auto Assign PR'
+description: 'auto assign PRs to reviewers'
 inputs:
-  milliseconds:  # id of input
-    description: 'number of milliseconds to wait'
+  draft-approvers: 
+    description: 'list of users to pull from when assigning draft PRs'
     required: true
-    default: '1000'
-outputs:
-  time: # output will be available to future steps 
-    description: 'The message to output'
+    default: []
 runs:
   using: 'node12'
   main: 'dist/index.js'
