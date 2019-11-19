@@ -4,14 +4,10 @@ const github = require("@actions/github");
 let autoAssign = function(milliseconds) {
   return new Promise((resolve, reject) => {
     // I want to just see things in here
-    core.debug("my github context");
-    core.debug(JSON.stringify(github.context));
+    console.log("my github context");
+    console.log(JSON.stringify(github.context));
 
-    if (typeof milliseconds !== "number") {
-      throw new Error("milleseconds not a number");
-    }
-
-    setTimeout(() => resolve("done!"), milliseconds);
+    setTimeout(() => resolve("done!"), 1000);
   });
 };
 
