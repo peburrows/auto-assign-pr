@@ -4,7 +4,6 @@ inputs:
   draft-approvers: 
     description: 'list of users to pull from when assigning draft PRs'
     required: true
-    default: []
 runs:
   using: 'node12'
   main: 'dist/index.js'
