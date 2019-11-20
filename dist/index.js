@@ -1512,7 +1512,7 @@ let autoAssign = function() {
       reviewers: ["bvandorn"]
     };
 
-    let pull_number = github.context.payload.pull_request.id;
+    let pull_number = github.context.payload.pull_request.number;
 
     let url = github.context.payload.pull_request.url + "/requested_reviewers";
     let token = core.getInput("github-token", { required: true });
