@@ -19,7 +19,8 @@ let autoAssign = function() {
     let pull_number = github.context.payload.pull_request.id;
 
     let url = github.context.payload.pull_request.url + "/requested_reviewers";
-    let token = process.env.GITHUB_TOKEN;
+    let token = core.getInput("github-token");
+    console.log("my token:", token);
     const octokit = new github.GitHub({ auth: token });
     let resp = await octokit.pulls.createReviewRequest({
       owner: github.context.payload.pull_request.base.repo.owner.login,

@@ -4,6 +4,9 @@ inputs:
   draft-approvers: 
     description: 'list of users to pull from when assigning draft PRs'
     required: true
+  github-token:
+    description: 'the GITHUB_TOKEN secret exposed to your action'
+    required: true
 runs:
   using: 'node12'
   main: 'dist/index.js'
