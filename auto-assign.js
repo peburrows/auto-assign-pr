@@ -14,7 +14,7 @@ let autoAssign = function() {
       requested_reviewers,
       url,
       base
-    } = github.context.payloast.pull_request;
+    } = github.context.payload.pull_request;
 
     const token = core.getInput("github-token", { required: true });
     const octokit = new github.GitHub(token);
