@@ -30,8 +30,6 @@ let autoAssign = function() {
     });
 
     console.log("response: ", resp);
-
-    // setTimeout(() => resolve("done!"), 1000);
   });
 };
 
