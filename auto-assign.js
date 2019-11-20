@@ -15,18 +15,16 @@ let autoAssign = function() {
       url,
       base
     } = github.context.payload.pull_request;
-    const action = github.context.payload.action;
+
+    const owner = base.repo.owner.login,
+      repo = base.repo.name,
+      action = github.context.payload.action;
 
     const token = core.getInput("github-token", { required: true });
     const octokit = new github.GitHub(token);
 
     if (draft && requested_reviewers.length === 0) {
       console.log("draft PR with no current reviewers, so will add one");
-
-      const owner = base.repo.owner.login,
-        repo = base.repo.name;
-
-      const reviewerUrl = url + "/requested_reviewers";
 
       await octokit.pulls.createReviewRequest({
         owner,
@@ -36,6 +34,7 @@ let autoAssign = function() {
       });
     } else if (action === "ready_for_review") {
       // draft converted to normal PR, so dismiss all reviews
+      console.log("a draft PR ready to review");
       const reviews = octokit.pulls.listReviews({
         owner,
         repo,
