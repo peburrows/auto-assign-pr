@@ -1,8 +1,8 @@
 const core = require("@actions/core");
 const github = require("@actions/github");
 
-let autoAssign = function(milliseconds) {
-  return new Promise((resolve, reject) => {
+let autoAssign = function() {
+  return new Promise(async (resolve, reject) => {
     // I want to just see things in here
     console.log("my github url");
     // console.log(github.context.payload.pull_request);
@@ -25,7 +25,7 @@ let autoAssign = function(milliseconds) {
       reviewers: reviewers
     });
 
-    console.log("response: ", resp)
+    console.log("response: ", resp);
 
     // setTimeout(() => resolve("done!"), 1000);
   });
