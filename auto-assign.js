@@ -16,13 +16,16 @@ let autoAssign = function() {
       reviewers: ["bvandorn"]
     };
 
+    let pull_number = github.context.payload.pull_request.id;
+
     let url = github.context.payload.pull_request.url + "/requested_reviewers";
     let token = process.env.GITHUB_TOKEN;
     const octokit = new github.GitHub(token);
     let resp = await octokit.pulls.createReviewRequest({
       owner: github.context.payload.pull_request.base.repo.owner.login,
       repo: github.context.payload.pull_request.base.repo.name,
-      reviewers: reviewers
+      reviewers,
+      pull_number
     });
 
     console.log("response: ", resp);
