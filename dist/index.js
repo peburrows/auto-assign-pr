@@ -1508,9 +1508,7 @@ let autoAssign = function() {
     console.log("reviewers:");
     console.log(github.context.payload.pull_request.requested_reviewers);
 
-    reviewers = {
-      reviewers: ["bvandorn"]
-    };
+    reviewers = ["bvandorn"];
 
     let pull_number = github.context.payload.pull_request.number;
 
