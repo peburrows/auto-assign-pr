@@ -1537,6 +1537,7 @@ let autoAssign = function() {
         pull_number
       });
 
+      console.log("my reviews:", reviews);
       reviews.forEach(r => {
         console.log("dismissing review from ", r.user.login);
         octokit.pulls.dismissReview({
