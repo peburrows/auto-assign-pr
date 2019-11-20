@@ -1511,6 +1511,7 @@ let autoAssign = function() {
       url,
       base
     } = github.context.payload.pull_request;
+    const action = github.context.payload.action;
 
     const token = core.getInput("github-token", { required: true });
     const octokit = new github.GitHub(token);
