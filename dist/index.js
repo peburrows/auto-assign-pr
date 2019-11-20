@@ -1524,10 +1524,20 @@ let autoAssign = function() {
     // });
 
     // console.log("my pulls", pulls);
+    const owner = github.context.payload.pull_request.base.repo.owner.login;
+    const repo = github.context.payload.pull_request.base.repo.name;
+
+    console.log(
+      "owner, repo, reviewers, pull_number",
+      owner || "N",
+      repo || "N",
+      reviewers || "N",
+      pull_number || "N"
+    );
 
     let resp = await octokit.pulls.createReviewRequest({
-      owner: github.context.payload.pull_request.base.repo.owner.login,
-      repo: github.context.payload.pull_request.base.repo.name,
+      owner,
+      repo,
       reviewers,
       pull_number
     });
