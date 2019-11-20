@@ -1500,7 +1500,7 @@ const github = __webpack_require__(469);
 let autoAssign = function() {
   return new Promise(async (resolve, reject) => {
     // we should remove the current author from this list
-    const reviewers = JSON.parse(core.getInput("draft-approvers"), {
+    const reviewerList = JSON.parse(core.getInput("draft-approvers"), {
       required: true
     });
 
@@ -1521,6 +1521,9 @@ let autoAssign = function() {
 
     if (draft && requested_reviewers.length === 0) {
       console.log("draft PR with no current reviewers, so will add one");
+
+      const i = Math.floor(Math.random() * reviewerList.length);
+      const reviewers = [reviewerList[i]];
 
       await octokit.pulls.createReviewRequest({
         owner,
@@ -1546,6 +1549,23 @@ let autoAssign = function() {
           pull_number,
           review_id: r.id,
           message: "dismissed because draft PR marked ready for review"
+        });
+      });
+
+      // re-request any review already assigned
+      const { data: requests } = await octokit.pulls.listReviewRequests({
+        owner,
+        repo,
+        pull_number
+      });
+
+      requests.users.forEach(async r => {
+        console.log("re-requesting review from ", r.login);
+        await octokit.pulls.createReviewRequest({
+          owner,
+          repo,
+          pull_number,
+          reviewers: [r.login]
         });
       });
     }
