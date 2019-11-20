@@ -44,6 +44,13 @@ let autoAssign = function() {
         pull_number
       });
 
+      // so we can re-request any review already assigned
+      const { data: requests } = await octokit.pulls.listReviewRequests({
+        owner,
+        repo,
+        pull_number
+      });
+
       console.log("my reviews:", reviews);
       reviews.forEach(async r => {
         console.log("dismissing review from ", r.user.login);
@@ -56,13 +63,7 @@ let autoAssign = function() {
         });
       });
 
-      // re-request any review already assigned
-      const { data: requests } = await octokit.pulls.listReviewRequests({
-        owner,
-        repo,
-        pull_number
-      });
-
+      console.log("the previously requested reviewers:", requests);
       requests.users.forEach(async r => {
         console.log("re-requesting review from ", r.login);
         await octokit.pulls.createReviewRequest({
