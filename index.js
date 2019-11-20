@@ -18,4 +18,6 @@ async function run() {
   }
 }
 
+// hello??
+console.log("about to run some stuff");
 run();
