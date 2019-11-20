@@ -35,16 +35,16 @@ let autoAssign = function() {
     } else if (action === "ready_for_review") {
       // draft converted to normal PR, so dismiss all reviews
       console.log("a draft PR ready to review");
-      const reviews = await octokit.pulls.listReviews({
+      const { data: reviews } = await octokit.pulls.listReviews({
         owner,
         repo,
         pull_number
       });
 
       console.log("my reviews:", reviews);
-      reviews.forEach(r => {
+      reviews.forEach(async r => {
         console.log("dismissing review from ", r.user.login);
-        octokit.pulls.dismissReview({
+        await octokit.pulls.dismissReview({
           owner,
           repo,
           pull_number,
