@@ -1499,48 +1499,55 @@ const github = __webpack_require__(469);
 
 let autoAssign = function() {
   return new Promise(async (resolve, reject) => {
-    // I want to just see things in here
-    console.log("my github url");
-    // console.log(github.context.payload.pull_request);
-    console.log(github.context.payload.pull_request.url);
-    console.log("draft?");
-    console.log(github.context.payload.pull_request.draft);
-    console.log("reviewers:");
-    console.log(github.context.payload.pull_request.requested_reviewers);
-
-    reviewers = ["bvandorn"];
-
-    let pull_number = github.context.payload.pull_request.number;
-
-    let url = github.context.payload.pull_request.url + "/requested_reviewers";
-    let token = core.getInput("github-token", { required: true });
-    const octokit = new github.GitHub(token);
-    // console.log("my client:", octokit);
-    // const pulls = await octokit.pulls.list({
-    //   owner: github.context.payload.pull_request.base.repo.owner.login,
-    //   repo: github.context.payload.pull_request.base.repo.name
-    // });
-
-    // console.log("my pulls", pulls);
-    const owner = github.context.payload.pull_request.base.repo.owner.login;
-    const repo = github.context.payload.pull_request.base.repo.name;
-
-    console.log(
-      "owner, repo, reviewers, pull_number",
-      owner || "N",
-      repo || "N",
-      reviewers || "N",
-      pull_number || "N"
-    );
-
-    let resp = await octokit.pulls.createReviewRequest({
-      owner,
-      repo,
-      reviewers,
-      pull_number
+    // we should remove the current author from this list
+    const reviewerList = JSON.parse(core.getInput("draft-approvers"), {
+      required: true
     });
 
-    console.log("response: ", resp);
+    const {
+      pull_number,
+      draft,
+      requested_reviewers,
+      url,
+      base
+    } = github.context.payloast.pull_request;
+
+    const token = core.getInput("github-token", { required: true });
+    const octokit = new github.GitHub(token);
+
+    if (draft && requested_reviewers.length === 0) {
+      console.log("draft PR with no current reviewers, so will add one");
+
+      const owner = base.repo.owner.login,
+        repo = base.repo.name;
+
+      const reviewerUrl = url + "/requested_reviewers";
+
+      await octokit.pulls.createReviewRequest({
+        owner,
+        repo,
+        reviewers,
+        pull_number
+      });
+    } else if (action === "ready_for_review") {
+      // draft converted to normal PR, so dismiss all reviews
+      const reviews = octokit.pulls.listReviews({
+        owner,
+        repo,
+        pull_number
+      });
+
+      reviews.forEach(r => {
+        console.log("dismissing review from ", r.user.login);
+        octokit.pulls.dismissReview({
+          owner,
+          repo,
+          pull_number,
+          review_id: r.id,
+          message: "dismissed because draft PR marked ready for review"
+        });
+      });
+    }
   });
 };
 
