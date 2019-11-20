@@ -21,7 +21,7 @@ let autoAssign = function() {
     let url = github.context.payload.pull_request.url + "/requested_reviewers";
     let token = core.getInput("github-token");
     console.log("my token:", token);
-    const octokit = new github.GitHub({ auth: token });
+    const octokit = new github.GitHub({ auth: "Bearer " + token });
     console.log("my client:", octokit);
     const pulls = await octokit.pulls.list({
       owner: github.context.payload.pull_request.base.repo.owner.login,
