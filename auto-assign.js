@@ -4,7 +4,7 @@ const github = require("@actions/github");
 let autoAssign = function() {
   return new Promise(async (resolve, reject) => {
     // we should remove the current author from this list
-    const reviewerList = JSON.parse(core.getInput("draft-approvers"), {
+    const reviewers = JSON.parse(core.getInput("draft-approvers"), {
       required: true
     });
 
