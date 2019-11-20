@@ -9,7 +9,7 @@ let autoAssign = function() {
     });
 
     const {
-      pull_number,
+      number: pull_number,
       draft,
       requested_reviewers,
       url,
