@@ -1500,7 +1500,7 @@ const github = __webpack_require__(469);
 let autoAssign = function() {
   return new Promise(async (resolve, reject) => {
     // we should remove the current author from this list
-    const reviewerList = JSON.parse(core.getInput("draft-approvers"), {
+    let reviewerList = JSON.parse(core.getInput("draft-approvers"), {
       required: true
     });
 
@@ -1509,7 +1509,8 @@ let autoAssign = function() {
       draft,
       requested_reviewers,
       url,
-      base
+      base,
+      user: { login: pr_author }
     } = github.context.payload.pull_request;
 
     const owner = base.repo.owner.login,
@@ -1522,6 +1523,8 @@ let autoAssign = function() {
     if (draft && requested_reviewers.length === 0) {
       console.log("draft PR with no current reviewers, so will add one");
 
+      // remove the author from the reviewerList
+      reviewerList = reviewerList.filter(r => r !== pr_author);
       const i = Math.floor(Math.random() * reviewerList.length);
       const reviewers = [reviewerList[i]];
 
