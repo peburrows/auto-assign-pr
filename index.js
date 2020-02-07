@@ -4,7 +4,7 @@ const autoAssign = require("./auto-assign");
 // most @actions toolkit packages have async methods
 async function run() {
   // try {
-  console.log("running my action...");
+  console.log("running my action (new version)...");
   await autoAssign();
   console.log("supposedly, I ran the autoAssign stuff");
 
