@@ -47,7 +47,6 @@ let autoAssign = function() {
         pull_number
       });
 
-      console.log("my reviews:", reviews);
       reviews.forEach(async r => {
         console.log("dismissing review from ", r.user.login);
         await octokit.pulls.dismissReview({
@@ -59,15 +58,16 @@ let autoAssign = function() {
         });
       });
 
-      console.log("the previously requested reviewers:", reviews);
-      reviews.forEach(async r => {
-        console.log("re-requesting review from ", r.login);
-        await octokit.pulls.createReviewRequest({
-          owner,
-          repo,
-          pull_number,
-          reviewers: [r.user.login]
-        });
+      // build a list of unique reviewers
+      let reviewers = reviews.map(r => r.user.login);
+      reviewers = Array.from(Set.new(reviewers));
+
+      console.log("re-requesting review from ", reviewers);
+      await octokit.pulls.createReviewRequest({
+        owner,
+        repo,
+        pull_number,
+        reviewers: [reviewers]
       });
     }
   });
