@@ -48,14 +48,16 @@ let autoAssign = function() {
       });
 
       reviews.forEach(async r => {
-        console.log("dismissing review from ", r.user.login);
-        await octokit.pulls.dismissReview({
-          owner,
-          repo,
-          pull_number,
-          review_id: r.id,
-          message: "dismissed because draft PR marked ready for review"
-        });
+        if (r.state === "APPROVED") {
+          console.log("dismissing review from ", r.user.login);
+          await octokit.pulls.dismissReview({
+            owner,
+            repo,
+            pull_number,
+            review_id: r.id,
+            message: "dismissed because draft PR marked ready for review"
+          });
+        }
       });
 
       // build a list of unique reviewers
