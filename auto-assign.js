@@ -62,7 +62,7 @@ let autoAssign = function() {
 
       // build a list of unique reviewers
       let reviewers = reviews.map(r => r.user.login);
-      reviewers = Array.from(Set.new(reviewers));
+      reviewers = Array.from(new Set(reviewers));
 
       console.log("re-requesting review from ", reviewers);
       await octokit.pulls.createReviewRequest({
