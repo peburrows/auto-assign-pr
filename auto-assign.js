@@ -72,8 +72,8 @@ let autoAssign = function() {
       // grab some random reviewer(s)
       while (count < newReviewerCount) {
         reviewerList = shuffleArray(reviewerList);
-        if (toRequest.indexOf(reviewerList[0]) === -1) {
-          toRequest.push(reviewerList[0]);
+        if (reviewers.indexOf(reviewerList[0]) === -1) {
+          reviewers.push(reviewerList[0]);
           count++;
         }
       }
@@ -108,15 +108,15 @@ let autoAssign = function() {
       });
 
       // build a list of unique reviewers
-      let reviewers = reviews.map(r => r.user.login);
-      reviewers = Array.from(new Set(reviewers));
+      let reReviewers = reviews.map(r => r.user.login);
+      reReviewers = Array.from(new Set(reReviewers));
 
-      console.log("re-requesting review from ", reviewers);
+      console.log("re-requesting review from ", reReviewers);
       await octokit.pulls.createReviewRequest({
         owner,
         repo,
         pull_number,
-        reviewers: [reviewers]
+        reviewers: reReviewers
       });
     }
   });
