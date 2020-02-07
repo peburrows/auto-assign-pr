@@ -22,12 +22,14 @@ const shuffleArray = function(array) {
 };
 
 let autoAssign = function() {
+  console.log("how did I break this...?");
   return new Promise(async (resolve, reject) => {
-    // we should remove the current author from this list
+    console.log("getting the draft approvers list");
     let reviewerList = JSON.parse(core.getInput("draft-approvers"), {
       required: true
     });
 
+    console.log("getting the reviewer count setting");
     let reviewerCount = parseInt(core.getInput("reviewer-count"));
     if (isNaN(reviewerCount)) {
       reviewerCount = 1;
