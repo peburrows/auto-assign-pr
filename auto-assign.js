@@ -33,6 +33,12 @@ let autoAssign = function() {
       reviewerCount = 1;
     }
 
+    console.log(
+      `reviewer count: ${reviewerCount}, and the input: ${core.getInput(
+        "reviewer-count"
+      )}`
+    );
+
     const {
       number: pull_number,
       draft,
