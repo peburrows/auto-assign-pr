@@ -1491,11 +1491,17 @@ const shuffleArray = __webpack_require__(644);
 const autoAssign = function () {
   return new Promise(async (resolve, reject) => {
     // CONFIG
-    const reviewerList = JSON.parse(core.getInput("draft-approvers"), {
+    // this gets re-assigned later, so needs `let` not `const`
+    let reviewerList = JSON.parse(core.getInput("draft-approvers"), {
       required: true,
     });
 
-    const onlyDrafts = core.getInput("only-drafts") == "false" ? false : true;
+    let onlyDrafts = core.getInput("only-drafts");
+    if (onlyDrafts === "false" || onlyDrafts === false) {
+      onlyDrafts = false;
+    } else {
+      onlyDrafts = true;
+    }
 
     let reviewerCount = parseInt(core.getInput("reviewer-count"));
     if (isNaN(reviewerCount)) {
