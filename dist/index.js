@@ -1564,7 +1564,7 @@ const autoAssign = function () {
         const reviewersToAdd = reviewerCount - requested_reviewers.length;
         // remove the PR author from the potential reviewers
         reviewerList = reviewerList.filter((r) => r !== author);
-        if (reviewersToAdd < reviewerList.length) {
+        if (reviewersToAdd > reviewerList.length) {
           return core.setFailed(
             "You requested more reviewers than you provided in the approver list"
           );
