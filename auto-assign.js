@@ -6,7 +6,7 @@ const autoAssign = function () {
   return new Promise(async (resolve, reject) => {
     // CONFIG
     // this gets re-assigned later, so needs `let` not `const`
-    let reviewerList = JSON.parse(core.getInput("draft-approvers"), {
+    let reviewerList = JSON.parse(core.getInput("reviewers"), {
       required: true,
     });
 
@@ -39,12 +39,17 @@ const autoAssign = function () {
 
     // first, if this PR has just been converted from a draft PR,
     // dismiss all reviews already submitted
-    if (action === "ready_for_review") {
+    if (action === "ready_for_review" || action === "synchronize") {
       const { data: reviews } = await octokit.pulls.listReviews({
         owner,
         repo,
         pull_number,
       });
+
+      let message = "dismissed because draft PR marked ready for review";
+      if (action === "synchronize") {
+        message = "dismissed because new commit(s) pushed";
+      }
 
       let reReviewers = new Set();
       reviews.forEach(async ({ state, id, user: { login } }) => {
@@ -55,7 +60,7 @@ const autoAssign = function () {
             repo,
             pull_number,
             review_id: id,
-            message: "dismissed because draft PR marked ready for review",
+            message,
           });
         }
       });
@@ -92,6 +97,7 @@ const autoAssign = function () {
           }
         }
 
+        console.log("requesting reviews from:", reviewers);
         await octokit.pulls.createReviewRequest({
           owner,
           repo,
