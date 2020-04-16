@@ -1490,7 +1490,6 @@ const shuffleArray = __webpack_require__(644);
 
 const autoAssign = function () {
   return new Promise(async (resolve, reject) => {
-    // CONFIG
     // this gets re-assigned later, so needs `let` not `const`
     let reviewerList = JSON.parse(core.getInput("reviewers"), {
       required: true,
@@ -1539,6 +1538,7 @@ const autoAssign = function () {
 
       let reReviewers = new Set();
       reviews.forEach(async ({ state, id, user: { login } }) => {
+        // is there a reason I'm only dismissing APPROVED reviews...?
         if (state === "APPROVED") {
           reReviewers.add(login);
           await octokit.pulls.dismissReview({
@@ -1552,13 +1552,17 @@ const autoAssign = function () {
       });
 
       reReviewers = Array.from(reReviewers);
-      console.log("re-requesting review from:", reReviewers);
-      await octokit.pulls.createReviewRequest({
-        owner,
-        repo,
-        pull_number,
-        reviewers: reReviewers,
-      });
+      if (reReviewers.length > 0) {
+        console.log("re-requesting review from:", reReviewers);
+        await octokit.pulls.createReviewRequest({
+          owner,
+          repo,
+          pull_number,
+          reviewers: reReviewers,
+        });
+      } else {
+        console.log("no need to re-request any reviews");
+      }
     } else {
       const shouldCheckReviewers = (onlyDrafts && draft) || !onlyDrafts;
       if (shouldCheckReviewers && requested_reviewers.length < reviewerCount) {
@@ -1583,13 +1587,17 @@ const autoAssign = function () {
           }
         }
 
-        console.log("requesting reviews from:", reviewers);
-        await octokit.pulls.createReviewRequest({
-          owner,
-          repo,
-          reviewers,
-          pull_number,
-        });
+        if (reviewers.length > 0) {
+          console.log("requesting reviews from:", reviewers);
+          await octokit.pulls.createReviewRequest({
+            owner,
+            repo,
+            reviewers,
+            pull_number,
+          });
+        } else {
+          console.log("no reviewers to request");
+        }
       }
     }
   });
